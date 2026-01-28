@@ -1,0 +1,29 @@
+model Order {
+    id String @id @default(uuid())
+    customerId String
+    providerId String
+    totalPrice Float
+    deliveryAddress String
+    status OrderStatus @default(PENDING)
+    paymentMethod PaymentMethod @default(COD)
+    createdAt DateTime @default(now())
+
+    customer User @relation("CustomerOrders", fields: [customerId], references: [id])
+    provider ProviderProfile @relation("ProviderOrders", fields: [providerId], references: [id])
+    items OrderItem[]
+}
+
+
+enum OrderStatus {
+    PENDING
+    ACCEPTED
+    PREPARING
+    ON_THE_WAY
+    DELIVERED
+    CANCELLED
+}
+
+
+enum PaymentMethod {
+    COD
+}

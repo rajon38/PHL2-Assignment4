@@ -1,0 +1,14 @@
+model ProviderProfile {
+    id String @id @default(uuid())
+    userId String @unique
+    restaurantName String
+    description String?
+    address String
+    phone String
+    isOpen Boolean @default(true)
+    createdAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    meals Meal[]
+    orders Order[] @relation("ProviderOrders")
+}
