@@ -163,8 +163,30 @@ const getOneMeal = async (mealId: string) => {
                 }
             }
         });
+        if (!meal) {
+            throw new Error("Meal not found");
+        }
 
-        return meal;
+
+        const reviewStats = await tx.review.aggregate({
+            where: {
+                mealId,
+            },
+            _count: {
+                rating: true,
+            },
+            _avg: {
+                rating: true,
+            },
+        });
+
+    return {
+        ...meal,
+        totalReviews: reviewStats._count.rating,
+        averageRating: reviewStats._avg.rating
+        ? Number(reviewStats._avg.rating.toFixed(1))
+        : 0,
+        };
     });
 }
 
