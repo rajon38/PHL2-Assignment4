@@ -1,5 +1,5 @@
-import { UserWhereInput } from "../../../generated/prisma/models";
-import { prisma } from "../../lib/prisma";
+import { UserWhereInput } from "../../../../generated/prisma/models";
+import { prisma } from "../../../lib/prisma";
 import { AuthInput } from "./auth.interface";
 
 const getUserById = async ( userId: string ) => {

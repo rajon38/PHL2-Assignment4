@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
-import paginationSortingHelper from "../../helpers/paginationSortingHelper";
+import paginationSortingHelper from "../../../helpers/paginationSortingHelper";
 
 const getUserById = async (req: Request, res: Response) => {
     const user = req?.user as any;
