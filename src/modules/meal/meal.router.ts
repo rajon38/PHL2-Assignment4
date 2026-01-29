@@ -4,6 +4,7 @@ import { MealController } from './meal.controller';
 
 const router = express.Router();
 
+router.get("/", auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.PROVIDER), MealController.getAllMeals);
 router.post("/", auth(UserRole.PROVIDER), MealController.createMeal);
 
 

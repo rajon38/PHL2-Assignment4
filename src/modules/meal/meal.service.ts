@@ -1,3 +1,4 @@
+import { MealWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { MealInput } from "./meal.interface";
 
@@ -41,6 +42,74 @@ const createMeal = async (userId: string, mealInput: MealInput) =>{
 
 }
 
+const getAllMeals = async ({search, isAvailable, page, limit, skip, sortBy, sortOrder}: 
+    {search: string | undefined, isAvailable: boolean | undefined, page: number, limit: number, skip: number, sortBy: string, sortOrder: string}) => {
+
+    const andConditions: MealWhereInput[] = [];
+    
+    if (search) {
+        andConditions.push({
+            OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { description: { contains: search, mode: 'insensitive' } }
+            ]
+        });
+    }
+
+    if (typeof isAvailable === "boolean") {
+        andConditions.push({ isAvailable });
+    }
+
+
+    const data = await prisma.meal.findMany({
+        take: limit,
+        skip,
+        where: {
+            AND: andConditions
+        },
+        orderBy: {
+            [sortBy]: sortOrder
+        },
+        select: { 
+            id: true,
+            name: true,
+            description: true,
+            price: true,
+            image: true,
+            isAvailable: true,
+            category: {
+                select: {
+                    id: true,
+                    name: true
+                }
+            },
+            provider: {
+                select: {
+                    id: true,
+                    restaurantName: true
+                }
+            }
+        }
+    });
+
+    const total = await prisma.meal.count({
+        where: {
+            AND: andConditions
+        }
+    });
+
+    return {
+        data,
+        meta: {
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        }
+    };
+}
+
 export const MealService = {
-    createMeal
+    createMeal,
+    getAllMeals
 }
