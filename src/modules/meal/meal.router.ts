@@ -8,6 +8,7 @@ router.get("/", auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.PROVIDER), Meal
 router.get("/:id", auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.PROVIDER), MealController.getOneMeal);
 router.post("/", auth(UserRole.PROVIDER), MealController.createMeal);
 router.patch("/:id", auth(UserRole.PROVIDER), MealController.updateMeal);
+router.delete("/:id", auth(UserRole.PROVIDER, UserRole.ADMIN), MealController.deleteMeal);
 
 
 export const MealRouter: Router = router;

@@ -202,16 +202,30 @@ const deleteMeal = async ( mealId: string ) => {
         throw new Error("Meal ID is required to delete a meal");
     }
 
-    const deletedMeal = await prisma.meal.delete({
-        where: { id: mealId },
-    });
+    return await prisma.$transaction(async (tx) => {
+        const existingMeal = await tx.meal.findUnique({
+            where: { id: mealId },
+        });
+        
+        if (!existingMeal) {
+            throw new Error("Meal does not exist");
+        }
+        await tx.review.deleteMany({
+            where: { mealId: mealId }
+        });
 
-    return deletedMeal;
+        const deletedMeal = await tx.meal.delete({
+            where: { id: mealId },
+        });
+        
+        return deletedMeal;
+    });
 }
 
 export const MealService = {
     createMeal,
     getAllMeals,
     getOneMeal,
-    updateMeal
+    updateMeal,
+    deleteMeal
 }

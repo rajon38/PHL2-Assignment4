@@ -67,9 +67,21 @@ const updateMeal = async (req: Request, res: Response) => {
     }
 };
 
+const deleteMeal = async (req: Request, res: Response) => {
+    try {
+        const mealId = req.params.id as string;
+
+        await MealService.deleteMeal(mealId);
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(400).json({ message: (error as Error).message });
+    }
+};
+
 export const MealController = {
     createMeal,
     getAllMeals,
     getOneMeal,
-    updateMeal
+    updateMeal,
+    deleteMeal
 };
