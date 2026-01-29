@@ -3,10 +3,10 @@ import { AuthService } from "./auth.service";
 import paginationSortingHelper from "../../helpers/paginationSortingHelper";
 
 const getUserById = async (req: Request, res: Response) => {
-    const userId = req.params.id as string;
+    const user = req?.user as any;
     try {
-        const user = await AuthService.getUserById(userId);
-        return res.status(200).json(user);
+        const data = await AuthService.getUserById(user.id);
+        return res.status(200).json(data);
     } catch (error: any) {
         return res.status(400).json({ message: error.message });
     }
