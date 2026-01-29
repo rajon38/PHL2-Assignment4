@@ -1,8 +1,8 @@
 import { prisma } from "../../lib/prisma";
 import { MealInput } from "./meal.interface";
 
-const createMeal = async (userId: string, categoryId: string, mealInput: MealInput) =>{
-    if( !userId || !categoryId ){
+const createMeal = async (userId: string, mealInput: MealInput) =>{
+    if( !userId || !mealInput.categoryId ){
         throw new Error("User ID and Category ID are required to create a meal.");
     }
 
@@ -17,7 +17,7 @@ const createMeal = async (userId: string, categoryId: string, mealInput: MealInp
         }
 
         const existingCategory = await tx.category.findUnique({
-            where: { id: categoryId },
+            where: { id: mealInput.categoryId },
             select: { id: true }
         });
         if (!existingCategory) {
@@ -27,7 +27,7 @@ const createMeal = async (userId: string, categoryId: string, mealInput: MealInp
         const newMeal = await tx.meal.create({
             data: {
                 providerId: existingProvider.providerProfile.id,
-                categoryId: categoryId,
+                categoryId: mealInput.categoryId,
                 name: mealInput.name,
                 description: mealInput.description || "",
                 price: mealInput.price,
