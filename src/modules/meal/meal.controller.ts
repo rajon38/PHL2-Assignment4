@@ -42,7 +42,34 @@ const getAllMeals = async (req: Request, res: Response) => {
     }
 };
 
+const getOneMeal = async (req: Request, res: Response) => {
+    try {
+        const mealId = req.params.id as string;
+        const meal = await MealService.getOneMeal(mealId);
+        if (!meal) {
+            return res.status(404).json({ message: "Meal not found" });
+        }
+        return res.status(200).json(meal);
+    } catch (error) {
+        return res.status(400).json({ message: (error as Error).message });
+    }
+};
+
+const updateMeal = async (req: Request, res: Response) => {
+    try {
+        const mealId = req.params.id as string;
+        const mealInput = req.body;
+
+        const updatedMeal = await MealService.updateMeal(mealId, mealInput);
+        return res.status(200).json(updatedMeal);
+    } catch (error) {
+        return res.status(400).json({ message: (error as Error).message });
+    }
+};
+
 export const MealController = {
     createMeal,
-    getAllMeals
+    getAllMeals,
+    getOneMeal,
+    updateMeal
 };
