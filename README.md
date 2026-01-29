@@ -46,8 +46,8 @@
 ### Installation
 
 ```bash
-git clone https://github.com/rajon38/
-cd PHL2-Assignment
+git clone https://github.com/rajon38/PHL2-Assignment4.git
+cd PHL2-Assignment4
 npm install
 ```
 
@@ -59,6 +59,6 @@ npm run dev
 
 Visit `http://localhost:5007` in your browser for local server.
 
-**Live URL:** 
+**Live URL:** https://assignment4-eight-jade.vercel.app/
 
-**Github Repo:** 
+**Github Repo:** https://github.com/rajon38/PHL2-Assignment4.git
