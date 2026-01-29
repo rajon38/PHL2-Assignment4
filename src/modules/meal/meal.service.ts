@@ -9,7 +9,7 @@ const createMeal = async (userId: string, mealInput: MealInput) =>{
 
     return await prisma.$transaction(async (tx) => {
         const existingProvider = await tx.user.findUnique({
-            where: { id: userId, role: 'PROVIDER' },
+            where: { id: userId },
             select: { id: true, providerProfile: { select: { id: true } } }
         });
 
@@ -110,35 +110,62 @@ const getAllMeals = async ({search, isAvailable, page, limit, skip, sortBy, sort
 }
 
 const getOneMeal = async (mealId: string) => {
-    const meal = await prisma.meal.findUnique({
-        where: { id: mealId },
-        select: { 
-            id: true,
-            name: true,
-            description: true,
-            price: true,
-            image: true,
-            isAvailable: true,
-            category: {
-                select: {
-                    id: true,
-                    name: true
-                }
+    if (!mealId) {
+        throw new Error("Meal ID is required to get a meal");
+    }
+    return await prisma.$transaction(async (tx) => {
+        await tx.meal.update({
+            where: {
+                id: mealId
             },
-            provider: {
-                select: {
-                    id: true,
-                    restaurantName: true
+            data: {
+                views: {
+                    increment: 1
                 }
             }
-        }
+        })
+
+        const meal = await tx.meal.findUnique({
+            where: { id: mealId },
+            select: { 
+                id: true,
+                name: true,
+                description: true,
+                price: true,
+                image: true,
+                isAvailable: true,
+                views: true,
+                category: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
+                },
+                provider: {
+                    select: {
+                        id: true,
+                        restaurantName: true
+                    }
+                },
+                reviews: {
+                    select: {
+                        id: true,
+                        rating: true,
+                        comment: true,
+                        createdAt: true,
+                        customer: {
+                            select: {
+                                id: true,
+                                name: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        return meal;
     });
-
-    if (!meal) {
-        throw new Error("Meal not found.");
-    }
-
-    return meal;
 }
 
 const updateMeal = async ( mealId: string, mealInput: Partial<MealInput> ) => {
@@ -168,6 +195,18 @@ const updateMeal = async ( mealId: string, mealInput: Partial<MealInput> ) => {
 
         return updatedMeal;
     });
+}
+
+const deleteMeal = async ( mealId: string ) => {
+    if (!mealId) {
+        throw new Error("Meal ID is required to delete a meal");
+    }
+
+    const deletedMeal = await prisma.meal.delete({
+        where: { id: mealId },
+    });
+
+    return deletedMeal;
 }
 
 export const MealService = {
