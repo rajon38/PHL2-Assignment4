@@ -1,6 +1,6 @@
-import { OrderStatus } from "../../../../generated/prisma/enums";
-import { OrderWhereInput } from "../../../../generated/prisma/models";
-import { prisma } from "../../../lib/prisma";
+import { OrderStatus } from "../../../generated/prisma/enums";
+import { OrderWhereInput } from "../../../generated/prisma/models";
+import { prisma } from "../../lib/prisma";
 import { CreateOrderInput } from "./order.interface";
 
 const createOrder = async (userId: string, data: CreateOrderInput) => {

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ProviderService } from "./provider.service";
-import paginationSortingHelper from "../../../helpers/paginationSortingHelper";
+import paginationSortingHelper from "../../helpers/paginationSortingHelper";
 
 const createProvider = async (req: Request, res: Response) => {
     const user = req?.user as any;

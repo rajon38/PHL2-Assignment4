@@ -1,5 +1,5 @@
 
-import { prisma } from "../../../lib/prisma";
+import { prisma } from "../../lib/prisma";
 
 const createCategory = async (name: string) => {
     const existingCategory = await prisma.category.findUnique({

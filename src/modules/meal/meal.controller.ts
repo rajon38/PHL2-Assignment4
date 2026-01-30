@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { MealService } from "./meal.service";
-import paginationSortingHelper from "../../../helpers/paginationSortingHelper";
+import paginationSortingHelper from "../../helpers/paginationSortingHelper";
 
 const createMeal = async (req: Request, res: Response) => {
     try {

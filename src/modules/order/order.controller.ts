@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { OrderService } from "./order.service";
-import paginationSortingHelper from "../../../helpers/paginationSortingHelper";
+import paginationSortingHelper from "../../helpers/paginationSortingHelper";
 
 const createOrder = async (req: Request, res: Response) => {
     try {

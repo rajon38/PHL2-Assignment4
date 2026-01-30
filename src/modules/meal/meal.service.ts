@@ -1,5 +1,5 @@
-import { MealWhereInput } from "../../../../generated/prisma/models";
-import { prisma } from "../../../lib/prisma";
+import { MealWhereInput } from "../../../generated/prisma/models";
+import { prisma } from "../../lib/prisma";
 import { MealInput } from "./meal.interface";
 
 const createMeal = async (userId: string, mealInput: MealInput) =>{

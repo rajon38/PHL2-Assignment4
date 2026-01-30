@@ -1,6 +1,6 @@
 
-import { ProviderProfileWhereInput } from "../../../../generated/prisma/models";
-import { prisma } from "../../../lib/prisma";
+import { ProviderProfileWhereInput } from "../../../generated/prisma/models";
+import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middleware/auth";
 import { ProviderInput } from "./provider.interface";
 
