@@ -1,4 +1,5 @@
-import { MealWhereInput } from "../../../generated/prisma/models";
+
+import { Prisma } from "../../../prisma/generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { MealInput } from "./meal.interface";
 
@@ -45,7 +46,7 @@ const createMeal = async (userId: string, mealInput: MealInput) =>{
 const getAllMeals = async ({search, isAvailable, page, limit, skip, sortBy, sortOrder}: 
     {search: string | undefined, isAvailable: boolean | undefined, page: number, limit: number, skip: number, sortBy: string, sortOrder: string}) => {
 
-    const andConditions: MealWhereInput[] = [];
+    const andConditions: Prisma.MealWhereInput[] = [];
     
     if (search) {
         andConditions.push({

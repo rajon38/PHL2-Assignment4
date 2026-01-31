@@ -1,4 +1,6 @@
-import { UserWhereInput } from "../../../generated/prisma/models";
+
+
+import { Prisma } from "../../../prisma/generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { AuthInput } from "./auth.interface";
 
@@ -37,7 +39,7 @@ const getUserById = async ( userId: string ) => {
 const getAllUsers = async ({search, emailVerified, page, limit, skip, sortBy, sortOrder}: 
     {search: string | undefined, emailVerified: boolean | undefined, page: number, limit: number, skip: number, sortBy: string, sortOrder: string}) => {
     
-    const andConditions: UserWhereInput[] = [];
+    const andConditions: Prisma.UserWhereInput[] = [];
 
     if (search) {
         andConditions.push({

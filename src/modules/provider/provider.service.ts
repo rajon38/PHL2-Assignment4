@@ -1,5 +1,7 @@
 
-import { ProviderProfileWhereInput } from "../../../generated/prisma/models";
+
+
+import { Prisma } from "../../../prisma/generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middleware/auth";
 import { ProviderInput } from "./provider.interface";
@@ -61,7 +63,7 @@ const getProviderById = async ( providerId: string ) => {
 const getAllProviders = async ( {search, isOpen, page, limit, skip, sortBy, sortOrder}: 
     {search: string | undefined, isOpen: boolean | undefined, page: number, limit: number, skip: number, sortBy: string, sortOrder: string}) => {
     
-    const andConditions: ProviderProfileWhereInput[] = [];
+    const andConditions: Prisma.ProviderProfileWhereInput[] = [];
     if (search) {
         andConditions.push({
             OR: [

@@ -1,13 +1,13 @@
 {
   "name": "assignment4",
-  "type": "commonjs",
   "version": "1.0.0",
-  "main": "dist/src/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node ./dist/src/server.js",
+    "start": "node ./dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx tsx watch src/server.ts",
-    "build": "prisma generate && tsc",
+    "build": "prisma generate && tsup",
+    "postinstall": "prisma generate",
     "seed:admin": "npx tsx src/scripts/seedAdmin.ts"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
     "@types/nodemailer": "^7.0.4",
     "@types/pg": "^8.16.0",
     "prisma": "^7.3.0",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

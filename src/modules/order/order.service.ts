@@ -1,7 +1,8 @@
-import { OrderStatus } from "../../../generated/prisma/enums";
-import { OrderWhereInput } from "../../../generated/prisma/models";
+
+
 import { prisma } from "../../lib/prisma";
 import { CreateOrderInput } from "./order.interface";
+import { OrderStatus, Prisma } from "../../../prisma/generated/prisma/client";
 
 const createOrder = async (userId: string, data: CreateOrderInput) => {
     if(!userId) {
@@ -72,7 +73,7 @@ const createOrder = async (userId: string, data: CreateOrderInput) => {
 const getAllOrders = async ({customerId, providerId, page, limit, skip, sortBy, sortOrder}: 
     {customerId?: string, providerId?: string, page: number, limit: number, skip: number, sortBy: string, sortOrder: string}) => {
 
-    const andConditions: OrderWhereInput[] = [];
+    const andConditions: Prisma.OrderWhereInput[] = [];
     
     if (typeof customerId === "string") {
         andConditions.push({
