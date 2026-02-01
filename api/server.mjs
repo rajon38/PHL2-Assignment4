@@ -564,7 +564,7 @@ var auth_default = auth2;
 
 // src/modules/category/category.router.ts
 var router = express.Router();
-router.get("/", auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */), CategoryController.getAllCategories);
+router.get("/", CategoryController.getAllCategories);
 router.post("/", auth_default("ADMIN" /* ADMIN */), CategoryController.createCategory);
 router.patch("/:id", auth_default("ADMIN" /* ADMIN */), CategoryController.updateCategory);
 var CategoryRouter = router;
@@ -767,8 +767,8 @@ var ProviderController = {
 
 // src/modules/provider/provider.router.ts
 var router2 = express2.Router();
-router2.get("/:id", auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */), ProviderController.getProviderById);
-router2.get("/", auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */), ProviderController.getAllProviders);
+router2.get("/:id", ProviderController.getProviderById);
+router2.get("/", ProviderController.getAllProviders);
 router2.post("/", auth_default("PROVIDER" /* PROVIDER */), ProviderController.createProvider);
 router2.patch("/:id", auth_default("ADMIN" /* ADMIN */, "PROVIDER" /* PROVIDER */), ProviderController.updateProvider);
 var ProviderRouter = router2;
@@ -1247,8 +1247,8 @@ var MealController = {
 
 // src/modules/meal/meal.router.ts
 var router4 = express4.Router();
-router4.get("/", auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */), MealController.getAllMeals);
-router4.get("/:id", auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */), MealController.getOneMeal);
+router4.get("/", MealController.getAllMeals);
+router4.get("/:id", MealController.getOneMeal);
 router4.post("/", auth_default("PROVIDER" /* PROVIDER */), MealController.createMeal);
 router4.patch("/:id", auth_default("PROVIDER" /* PROVIDER */), MealController.updateMeal);
 router4.delete("/:id", auth_default("PROVIDER" /* PROVIDER */, "ADMIN" /* ADMIN */), MealController.deleteMeal);

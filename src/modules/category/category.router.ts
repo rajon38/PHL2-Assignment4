@@ -4,7 +4,7 @@ import auth, { UserRole } from '../../middleware/auth';
 
 const router = express.Router();
 
-router.get('/', auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.PROVIDER), CategoryController.getAllCategories);
+router.get('/', CategoryController.getAllCategories);
 router.post('/', auth(UserRole.ADMIN), CategoryController.createCategory);
 router.patch('/:id', auth(UserRole.ADMIN), CategoryController.updateCategory);
 

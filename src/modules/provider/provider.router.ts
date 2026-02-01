@@ -4,8 +4,8 @@ import { ProviderController } from './provider.controller';
 
 const router = express.Router();
 
-router.get('/:id', auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.PROVIDER), ProviderController.getProviderById);
-router.get('/', auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.PROVIDER), ProviderController.getAllProviders);
+router.get('/:id', ProviderController.getProviderById);
+router.get('/', ProviderController.getAllProviders);
 router.post('/', auth(UserRole.PROVIDER), ProviderController.createProvider)
 router.patch('/:id', auth(UserRole.ADMIN, UserRole.PROVIDER), ProviderController.updateProvider);
 
