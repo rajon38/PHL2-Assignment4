@@ -295,12 +295,8 @@ var auth = betterAuth({
     },
     cookies: {
       session_token: {
-        attributes: {
-          // <-- sameSite goes inside attributes
-          sameSite: "none",
-          secure: true,
-          partitioned: true
-        }
+        sameSite: "none",
+        secure: true
       }
     }
   },
@@ -1743,6 +1739,7 @@ var routes_default = router7;
 
 // src/app.ts
 var app = express8();
+app.set("trust proxy", 1);
 var corsOptions = {
   origin: [
     process.env.APP_URL || "http://localhost:3000",

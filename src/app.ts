@@ -8,8 +8,10 @@ import errorHandler from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 import router from "./routes";
 
-const app = express();
 
+const app = express();
+// CRITICAL: Trust proxy for Vercel
+app.set('trust proxy', 1);
 const corsOptions = {
   origin: [
     process.env.APP_URL || "http://localhost:3000",
