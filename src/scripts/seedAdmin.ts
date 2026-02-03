@@ -4,7 +4,7 @@ import { UserRole } from "../middleware/auth";
 async function seedAdmin() {
     try {
         const seedAdminData = {
-            email: "admin1@gmail.com",
+            email: "admin@gmail.com",
             name: "Admin",
             role: UserRole.ADMIN,
             password: "admin123"
@@ -18,7 +18,7 @@ async function seedAdmin() {
         }
 
         // Create admin user
-        const signUpAdmin = await fetch("http://localhost:5007/api/auth/sign-up/email", {
+        const signUpAdmin = await fetch("https://assignment4-lake-eta.vercel.app/api/auth/sign-up/email", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

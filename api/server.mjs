@@ -785,9 +785,11 @@ var getUserById = async (userId) => {
       email: true,
       name: true,
       role: true,
+      phone: true,
       emailVerified: true,
       providerProfile: {
         select: {
+          id: true,
           restaurantName: true,
           description: true,
           address: true,
@@ -993,7 +995,7 @@ var createMeal = async (userId, mealInput) => {
     return newMeal;
   });
 };
-var getAllMeals = async ({ search, isAvailable, page, limit, skip, sortBy, sortOrder }) => {
+var getAllMeals = async ({ search, providerId, isAvailable, page, limit, skip, sortBy, sortOrder }) => {
   const andConditions = [];
   if (search) {
     andConditions.push({
@@ -1005,6 +1007,9 @@ var getAllMeals = async ({ search, isAvailable, page, limit, skip, sortBy, sortO
   }
   if (typeof isAvailable === "boolean") {
     andConditions.push({ isAvailable });
+  }
+  if (typeof providerId === "string") {
+    andConditions.push({ providerId });
   }
   const data = await prisma.meal.findMany({
     take: limit,
@@ -1196,8 +1201,9 @@ var getAllMeals2 = async (req, res) => {
     const { search } = req.query;
     const searchString = typeof search === "string" ? search : void 0;
     const isAvailable = req.query.isAvailable ? req.query.isAvailable === "true" ? true : req.query.isAvailable === "false" ? false : void 0 : void 0;
+    const providerId = req.query.providerId ? typeof req.query.providerId === "string" ? req.query.providerId : void 0 : void 0;
     const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper_default(req.query);
-    const result = await MealService.getAllMeals({ search: searchString, isAvailable, page, limit, skip, sortBy, sortOrder });
+    const result = await MealService.getAllMeals({ search: searchString, providerId, isAvailable, page, limit, skip, sortBy, sortOrder });
     res.status(200).json(result);
   } catch (e) {
     res.status(400).json({
@@ -1418,11 +1424,8 @@ var createOrder = async (userId, data) => {
     if (meals.length !== data.items.length) {
       throw new Error("One or more meals not found");
     }
-    let totalPrice = 0;
     const orderItems = data.items.map((item) => {
       const meal = meals.find((m) => m.id === item.mealId);
-      const itemTotal = meal.price * item.quantity;
-      totalPrice += itemTotal;
       return {
         mealId: meal.id,
         quantity: item.quantity,
@@ -1435,7 +1438,7 @@ var createOrder = async (userId, data) => {
         providerId: data.providerId,
         deliveryAddress: data.deliveryAddress,
         paymentMethod: data.paymentMethod ?? "COD",
-        totalPrice,
+        totalPrice: data.totalPrice,
         items: {
           create: orderItems
         }
@@ -1536,10 +1539,8 @@ var updateOrderById = async (orderId, userId, data) => {
       if (meals.length !== data.items.length) {
         throw new Error("One or more meals not found");
       }
-      totalPrice = 0;
       const newItems = data.items.map((item) => {
         const meal = meals.find((m) => m.id === item.mealId);
-        totalPrice += meal.price * item.quantity;
         return {
           mealId: meal.id,
           quantity: item.quantity,
@@ -1558,7 +1559,7 @@ var updateOrderById = async (orderId, userId, data) => {
       data: {
         deliveryAddress: data.deliveryAddress ?? order.deliveryAddress,
         paymentMethod: data.paymentMethod ?? order.paymentMethod,
-        totalPrice
+        totalPrice: data.totalPrice ?? order.totalPrice
       },
       include: {
         items: {
