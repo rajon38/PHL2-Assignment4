@@ -12,33 +12,26 @@ import router from "./routes";
 const app = express();
 // CRITICAL: Trust proxy for Vercel
 app.set('trust proxy', 1);
-const corsOptions = {
-  origin: [
-    process.env.APP_URL || "http://localhost:3000",
-    "http://localhost:3001",
-    "https://client-hazel-theta.vercel.app",
-  ].filter(Boolean),
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "Accept",
-    "X-Requested-With",
-    "Origin",
-    "Cache-Control",
-    "X-CSRF-Token",
-    "User-Agent",
-    "Content-Length",
-  ],
-  credentials: true,
-  exposedHeaders: ["set-cookie"],
-  optionsSuccessStatus: 200,
-};
 
-app.use(cors(corsOptions));
+app.use(express.json());
+
+//! CROS setup
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowed = process.env.APP_URL?.replace(/\/$/, "");
+      if (!origin || origin.replace(/\/$/, "") === allowed) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  }),
+);
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
-app.use(express.json());
+
 
 app.get("/", (req, res) => {
     res.send("Hello, World!");

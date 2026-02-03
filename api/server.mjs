@@ -280,42 +280,24 @@ var auth = betterAuth({
     // or "mysql", "postgresql", ...etc
   }),
   // IMPORTANT: Set base URL for production
-  baseURL: process.env.BETTER_AUTH_URL || process.env.BACKEND_URL || "http://localhost:3000",
+  baseURL: process.env.BETTER_AUTH_URL,
   // Trust the host/proxy (required for Vercel)
-  trustedOrigins: [
-    process.env.APP_URL,
-    process.env.BACKEND_URL
-  ].filter(Boolean),
-  // Session configuration
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60
-      // 5 minutes
-    }
-  },
-  // Advanced cookie settings for cross-origin
-  advanced: {
-    useSecureCookies: process.env.NODE_ENV === "production",
-    cookiePrefix: "foodhub",
-    crossSubDomainCookies: {
-      enabled: true
-    }
-  },
-  // Cookie attributes - THIS IS THE KEY FIX
+  trustedOrigins: [process.env.APP_URL],
   cookie: {
-    sameSite: "none",
-    // Required for cross-origin
-    secure: true,
-    // Required when sameSite is "none"
-    httpOnly: true
-    // Security best practice
+    namePrefix: "foodhub",
+    attributes: {
+      sameSite: "none",
+      secure: true
+    }
+  },
+  advanced: {
+    useSecureCookies: true
   },
   user: {
     additionalFields: {
       role: {
         type: "string",
-        defaultValue: "USER",
+        defaultValue: "CUSTOMER",
         required: false
       },
       phone: {
@@ -341,7 +323,7 @@ var auth = betterAuth({
       try {
         const varificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
         const info = await transporter.sendMail({
-          from: '"FoodHub" <foodhub@gmail.com>',
+          from: `"FoodHub" <${process.env.EMAIL_USER}>`,
           to: user.email,
           subject: "Verify Your Email \u2714",
           text: "Hello! Please verify your email address.",
@@ -1751,31 +1733,21 @@ var routes_default = router7;
 // src/app.ts
 var app = express8();
 app.set("trust proxy", 1);
-var corsOptions = {
-  origin: [
-    process.env.APP_URL || "http://localhost:3000",
-    "http://localhost:3001",
-    "https://client-hazel-theta.vercel.app"
-  ].filter(Boolean),
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "Accept",
-    "X-Requested-With",
-    "Origin",
-    "Cache-Control",
-    "X-CSRF-Token",
-    "User-Agent",
-    "Content-Length"
-  ],
-  credentials: true,
-  exposedHeaders: ["set-cookie"],
-  optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
-app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express8.json());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      const allowed = process.env.APP_URL?.replace(/\/$/, "");
+      if (!origin || origin.replace(/\/$/, "") === allowed) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true
+  })
+);
+app.all("/api/auth/*splat", toNodeHandler(auth));
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
@@ -1799,3 +1771,4 @@ async function main() {
   }
 }
 main();
+//! CROS setup

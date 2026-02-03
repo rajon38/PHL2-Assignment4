@@ -19,43 +19,26 @@ export const auth = betterAuth({
     }),
     
     // IMPORTANT: Set base URL for production
-    baseURL: process.env.BETTER_AUTH_URL || process.env.BACKEND_URL || "http://localhost:3000",
+    baseURL: process.env.BETTER_AUTH_URL,
     
     // Trust the host/proxy (required for Vercel)
-    trustedOrigins: [
-        process.env.APP_URL!,
-        process.env.BACKEND_URL!,
-    ].filter(Boolean),
-    
-    // Session configuration
-    session: {
-        cookieCache: {
-            enabled: true,
-            maxAge: 5 * 60, // 5 minutes
-        },
+    trustedOrigins: [process.env.APP_URL!],
+  cookie: {
+    namePrefix: "foodhub",
+    attributes: {
+      sameSite: "none",
+      secure: true,
     },
-    
-    // Advanced cookie settings for cross-origin
-    advanced: {
-        useSecureCookies: process.env.NODE_ENV === "production",
-        cookiePrefix: "foodhub",
-        crossSubDomainCookies: {
-            enabled: true,
-        },
-    },
-    
-    // Cookie attributes - THIS IS THE KEY FIX
-    cookie: {
-        sameSite: "none", // Required for cross-origin
-        secure: true,     // Required when sameSite is "none"
-        httpOnly: true,   // Security best practice
-    },
+  },
+  advanced: {
+    useSecureCookies: true,
+  },
     
     user: {
         additionalFields:{
             role: {
                 type: "string",
-                defaultValue: "USER",
+                defaultValue: "CUSTOMER",
                 required: false
             },
             phone: {
@@ -83,7 +66,7 @@ export const auth = betterAuth({
             try {
                 const varificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
                 const info = await transporter.sendMail({
-                    from: '"FoodHub" <foodhub@gmail.com>',
+                    from: `"FoodHub" <${process.env.EMAIL_USER}>`,
                     to: user.email,
                     subject: "Verify Your Email ✔",
                     text: "Hello! Please verify your email address.", // Plain-text version of the message
