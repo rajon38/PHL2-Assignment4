@@ -1722,8 +1722,7 @@ var corsOptions = {
   origin: [
     process.env.APP_URL || "http://localhost:3000",
     "http://localhost:3001",
-    "https://client-hazel-theta.vercel.app",
-    "*"
+    "https://client-hazel-theta.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: [
