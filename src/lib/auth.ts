@@ -28,18 +28,15 @@ export const auth = betterAuth({
     ].filter(Boolean),
     
     // Advanced cookie settings for cross-origin
+    cookie: {
+      namePrefix: "foodhub",
+      attributes: {
+        sameSite: "none",
+        secure: true,
+      },
+    },
     advanced: {
-        cookiePrefix: "better-auth",
-        useSecureCookies: process.env.NODE_ENV === "production",
-        crossSubDomainCookies: {
-            enabled: true,
-        },
-        cookies: {
-            session_token: {
-                sameSite:  "none" ,
-                secure: true,
-            },
-        },
+      useSecureCookies: true,
     },
     
     user: {

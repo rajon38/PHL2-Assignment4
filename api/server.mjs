@@ -287,18 +287,15 @@ var auth = betterAuth({
     process.env.BACKEND_URL
   ].filter(Boolean),
   // Advanced cookie settings for cross-origin
-  advanced: {
-    cookiePrefix: "better-auth",
-    useSecureCookies: process.env.NODE_ENV === "production",
-    crossSubDomainCookies: {
-      enabled: true
-    },
-    cookies: {
-      session_token: {
-        sameSite: "none",
-        secure: true
-      }
+  cookie: {
+    namePrefix: "foodhub",
+    attributes: {
+      sameSite: "none",
+      secure: true
     }
+  },
+  advanced: {
+    useSecureCookies: true
   },
   user: {
     additionalFields: {
