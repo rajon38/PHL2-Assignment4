@@ -37,8 +37,8 @@ export const auth = betterAuth({
         cookies: {
             session_token: {
               attributes: {  // <-- sameSite goes inside attributes
-                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-                secure: process.env.NODE_ENV === "production",
+                sameSite: "none",
+                secure: true,
               },
             },
         },

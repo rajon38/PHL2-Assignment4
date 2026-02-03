@@ -297,8 +297,8 @@ var auth = betterAuth({
       session_token: {
         attributes: {
           // <-- sameSite goes inside attributes
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          secure: process.env.NODE_ENV === "production"
+          sameSite: "none",
+          secure: true
         }
       }
     }
