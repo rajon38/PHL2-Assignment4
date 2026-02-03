@@ -298,7 +298,8 @@ var auth = betterAuth({
         attributes: {
           // <-- sameSite goes inside attributes
           sameSite: "none",
-          secure: true
+          secure: true,
+          partitioned: true
         }
       }
     }
