@@ -17,7 +17,33 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
-    trustedOrigins: [process.env.APP_URL! ],
+    
+    // IMPORTANT: Set base URL for production
+    baseURL: process.env.BETTER_AUTH_URL || process.env.BACKEND_URL || "http://localhost:3000",
+    
+    // Trust the host/proxy (required for Vercel)
+    trustedOrigins: [
+        process.env.APP_URL!,
+        process.env.BACKEND_URL!,
+    ].filter(Boolean),
+    
+    // Advanced cookie settings for cross-origin
+    advanced: {
+        cookiePrefix: "better-auth",
+        useSecureCookies: process.env.NODE_ENV === "production",
+        crossSubDomainCookies: {
+            enabled: true,
+        },
+        cookies: {
+            session_token: {
+              attributes: {  // <-- sameSite goes inside attributes
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                secure: process.env.NODE_ENV === "production",
+              },
+            },
+        },
+    },
+    
     user: {
         additionalFields:{
             role: {
@@ -36,23 +62,25 @@ export const auth = betterAuth({
             }
         }
     },
+    
     emailAndPassword: { 
         enabled: true, 
         autoSignIn: false,
         requireEmailVerification: true
     },
+    
     emailVerification:{
         sendOnSignUp: true,
         autoSignInAfterVerification: true,
         sendVerificationEmail: async ( { user, url, token }, request) => {
             try {
-            const varificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
-            const info = await transporter.sendMail({
-            from: '"Prisma Blog" <prism@gmail.com>',
-            to: user.email,
-            subject: "Hello ✔",
-            text: "Hello world?", // Plain-text version of the message
-            html: `<!DOCTYPE html>
+                const varificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
+                const info = await transporter.sendMail({
+                    from: '"Prisma Blog" <prism@gmail.com>',
+                    to: user.email,
+                    subject: "Hello ✔",
+                    text: "Hello world?", // Plain-text version of the message
+                    html: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -90,7 +118,7 @@ export const auth = betterAuth({
               </div>
 
               <p style="color:#555; font-size:14px;">
-                If the button doesn’t work, copy and paste the following link into your browser:
+                If the button doesn't work, copy and paste the following link into your browser:
               </p>
 
               <p style="word-break:break-all; color:#0d6efd; font-size:14px;">
@@ -120,20 +148,22 @@ export const auth = betterAuth({
 </body>
 </html>
 `, // HTML version of the message
-  });
+                });
 
-  console.log("Message sent:", info.messageId);
+                console.log("Message sent:", info.messageId);
             } catch (error) {
                 console.log(error);
             }
+        },
     },
-    },
+    
     socialProviders: {
         google: { 
             prompt: "select_account consent",
             accessType: "offline",
             clientId: process.env.GOOGLE_CLIENT_ID as string, 
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string, 
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            redirectURI: `${process.env.BETTER_AUTH_URL || process.env.BACKEND_URL}/api/auth/callback/google`,
         }, 
     },
 });

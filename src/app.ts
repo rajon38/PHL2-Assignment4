@@ -12,11 +12,10 @@ const app = express();
 
 const corsOptions = {
   origin: [
-    process.env.APP_URL ||
-    "http://localhost:3000",
+    process.env.APP_URL || "http://localhost:3000",
     "http://localhost:3001",
     "https://client-hazel-theta.vercel.app",
-  ],
+  ].filter(Boolean),
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: [
     "Content-Type",
@@ -30,7 +29,10 @@ const corsOptions = {
     "Content-Length",
   ],
   credentials: true,
+  exposedHeaders: ["set-cookie"],
+  optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 
 app.all("/api/auth/*splat", toNodeHandler(auth));

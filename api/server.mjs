@@ -279,7 +279,30 @@ var auth = betterAuth({
     provider: "postgresql"
     // or "mysql", "postgresql", ...etc
   }),
-  trustedOrigins: [process.env.APP_URL],
+  // IMPORTANT: Set base URL for production
+  baseURL: process.env.BETTER_AUTH_URL || process.env.BACKEND_URL || "http://localhost:3000",
+  // Trust the host/proxy (required for Vercel)
+  trustedOrigins: [
+    process.env.APP_URL,
+    process.env.BACKEND_URL
+  ].filter(Boolean),
+  // Advanced cookie settings for cross-origin
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: true
+    },
+    cookies: {
+      session_token: {
+        attributes: {
+          // <-- sameSite goes inside attributes
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          secure: process.env.NODE_ENV === "production"
+        }
+      }
+    }
+  },
   user: {
     additionalFields: {
       role: {
@@ -353,7 +376,7 @@ var auth = betterAuth({
               </div>
 
               <p style="color:#555; font-size:14px;">
-                If the button doesn\u2019t work, copy and paste the following link into your browser:
+                If the button doesn't work, copy and paste the following link into your browser:
               </p>
 
               <p style="word-break:break-all; color:#0d6efd; font-size:14px;">
@@ -396,7 +419,8 @@ var auth = betterAuth({
       prompt: "select_account consent",
       accessType: "offline",
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      redirectURI: `${process.env.BETTER_AUTH_URL || process.env.BACKEND_URL}/api/auth/callback/google`
     }
   }
 });
@@ -1723,7 +1747,7 @@ var corsOptions = {
     process.env.APP_URL || "http://localhost:3000",
     "http://localhost:3001",
     "https://client-hazel-theta.vercel.app"
-  ],
+  ].filter(Boolean),
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: [
     "Content-Type",
@@ -1736,7 +1760,9 @@ var corsOptions = {
     "User-Agent",
     "Content-Length"
   ],
-  credentials: true
+  credentials: true,
+  exposedHeaders: ["set-cookie"],
+  optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 app.all("/api/auth/*splat", toNodeHandler(auth));
