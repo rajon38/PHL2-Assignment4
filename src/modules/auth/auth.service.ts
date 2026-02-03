@@ -12,9 +12,11 @@ const getUserById = async ( userId: string ) => {
             email: true,
             name: true,
             role: true,
+            phone: true,
             emailVerified: true,
             providerProfile:{
                 select: {
+                    id: true,
                     restaurantName: true,
                     description: true,
                     address: true,

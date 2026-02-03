@@ -25,15 +25,15 @@ const createOrder = async (userId: string, data: CreateOrderInput) => {
             throw new Error("One or more meals not found");
         }
 
-        let totalPrice = 0;
+        //let totalPrice = 0;
 
 
-        const orderItems = data.items.map(item => {
-        const meal = meals.find(m => m.id === item.mealId)!;
-        const itemTotal = meal.price * item.quantity;
+           const orderItems = data.items.map(item => {
+           const meal = meals.find(m => m.id === item.mealId)!;
+        // const itemTotal = meal.price * item.quantity;
 
 
-        totalPrice += itemTotal;
+        //totalPrice += itemTotal;
 
 
         return {
@@ -49,7 +49,7 @@ const createOrder = async (userId: string, data: CreateOrderInput) => {
                             providerId: data.providerId,
                             deliveryAddress: data.deliveryAddress,
                             paymentMethod: data.paymentMethod ?? "COD",
-                            totalPrice,
+                            totalPrice: data.totalPrice,
                             items: {
                                 create: orderItems,
                             },
@@ -170,12 +170,12 @@ const updateOrderById = async (orderId: string,  userId: string, data: Partial<C
         throw new Error("One or more meals not found");
     }
 
-    totalPrice = 0;
+    //totalPrice = 0;
 
 
     const newItems = data.items.map(item => {
     const meal = meals.find(m => m.id === item.mealId)!;
-    totalPrice += meal.price * item.quantity;
+    //totalPrice += meal.price * item.quantity;
 
 
     return {
@@ -201,7 +201,7 @@ const updateOrderById = async (orderId: string,  userId: string, data: Partial<C
         data: {
             deliveryAddress: data.deliveryAddress ?? order.deliveryAddress,
             paymentMethod: data.paymentMethod ?? order.paymentMethod,
-            totalPrice,
+            totalPrice: data.totalPrice ?? order.totalPrice,
         },
         include: {
             items: {

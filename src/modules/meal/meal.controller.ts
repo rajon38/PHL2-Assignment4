@@ -30,8 +30,14 @@ const getAllMeals = async (req: Request, res: Response) => {
                     : undefined
             : undefined
 
+        const providerId = req.query.providerId
+            ? typeof req.query.providerId === 'string'
+                ? req.query.providerId
+                : undefined
+            : undefined
+
     const { page, limit, skip, sortBy, sortOrder } = paginationSortingHelper(req.query)
-    const result = await MealService.getAllMeals({ search: searchString, isAvailable, page, limit, skip, sortBy, sortOrder })
+    const result = await MealService.getAllMeals({ search: searchString, providerId, isAvailable, page, limit, skip, sortBy, sortOrder })
         res.status(200).json(result)
     }
     catch (e) {

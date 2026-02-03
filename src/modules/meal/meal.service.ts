@@ -43,8 +43,8 @@ const createMeal = async (userId: string, mealInput: MealInput) =>{
 
 }
 
-const getAllMeals = async ({search, isAvailable, page, limit, skip, sortBy, sortOrder}: 
-    {search: string | undefined, isAvailable: boolean | undefined, page: number, limit: number, skip: number, sortBy: string, sortOrder: string}) => {
+const getAllMeals = async ({search, providerId, isAvailable, page, limit, skip, sortBy, sortOrder}: 
+    {search: string | undefined, providerId: string | undefined, isAvailable: boolean | undefined, page: number, limit: number, skip: number, sortBy: string, sortOrder: string}) => {
 
     const andConditions: Prisma.MealWhereInput[] = [];
     
@@ -61,6 +61,9 @@ const getAllMeals = async ({search, isAvailable, page, limit, skip, sortBy, sort
         andConditions.push({ isAvailable });
     }
 
+    if (typeof providerId === "string") {
+        andConditions.push({ providerId });
+    }
 
     const data = await prisma.meal.findMany({
         take: limit,

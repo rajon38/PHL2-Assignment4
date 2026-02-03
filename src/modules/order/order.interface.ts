@@ -8,4 +8,5 @@ export interface CreateOrderInput {
   deliveryAddress: string;
   paymentMethod?: "COD";
   items: CreateOrderItemInput[];
+  totalPrice: number;
 }
