@@ -3,6 +3,8 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import nodemailer from "nodemailer";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
@@ -23,17 +25,23 @@ export const auth = betterAuth({
     
     // Trust the host/proxy (required for Vercel)
     trustedOrigins: [process.env.APP_URL!],
-  cookie: {
-    namePrefix: "foodhub",
-    attributes: {
-      sameSite: "none",
-      secure: true,
-    },
-  },
   advanced: {
-    useSecureCookies: true,
+    defaultCookieAttributes: {
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction, // secure in production
+      httpOnly: true,
+    },
+    trustProxy: true,
+    cookies: {
+      state: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+        },
+      },
+    },
+    secret: process.env.BETTER_AUTH_SECRET
   },
-    
     user: {
         additionalFields:{
             role: {
