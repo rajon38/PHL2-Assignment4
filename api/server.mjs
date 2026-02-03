@@ -1718,10 +1718,28 @@ var routes_default = router7;
 
 // src/app.ts
 var app = express8();
-app.use(cors({
-  origin: process.env.APP_URL,
+var corsOptions = {
+  origin: [
+    process.env.APP_URL || "http://localhost:3000",
+    "http://localhost:3001",
+    "https://client-hazel-theta.vercel.app",
+    "*"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Accept",
+    "X-Requested-With",
+    "Origin",
+    "Cache-Control",
+    "X-CSRF-Token",
+    "User-Agent",
+    "Content-Length"
+  ],
   credentials: true
-}));
+};
+app.use(cors(corsOptions));
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express8.json());
 app.get("/", (req, res) => {
