@@ -27,16 +27,28 @@ export const auth = betterAuth({
         process.env.BACKEND_URL!,
     ].filter(Boolean),
     
-    // Advanced cookie settings for cross-origin
-    cookie: {
-      namePrefix: "foodhub",
-      attributes: {
-        sameSite: "none",
-        secure: true,
-      },
+    // Session configuration
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 5 * 60, // 5 minutes
+        },
     },
+    
+    // Advanced cookie settings for cross-origin
     advanced: {
-      useSecureCookies: true,
+        useSecureCookies: process.env.NODE_ENV === "production",
+        cookiePrefix: "foodhub",
+        crossSubDomainCookies: {
+            enabled: true,
+        },
+    },
+    
+    // Cookie attributes - THIS IS THE KEY FIX
+    cookie: {
+        sameSite: "none", // Required for cross-origin
+        secure: true,     // Required when sameSite is "none"
+        httpOnly: true,   // Security best practice
     },
     
     user: {
@@ -71,10 +83,10 @@ export const auth = betterAuth({
             try {
                 const varificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
                 const info = await transporter.sendMail({
-                    from: '"Prisma Blog" <prism@gmail.com>',
+                    from: '"FoodHub" <foodhub@gmail.com>',
                     to: user.email,
-                    subject: "Hello ✔",
-                    text: "Hello world?", // Plain-text version of the message
+                    subject: "Verify Your Email ✔",
+                    text: "Hello! Please verify your email address.", // Plain-text version of the message
                     html: `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,7 +104,7 @@ export const auth = betterAuth({
           <!-- Header -->
           <tr>
             <td style="padding:30px; text-align:center; background:#0d6efd; border-radius:8px 8px 0 0;">
-              <h1 style="color:#ffffff; margin:0;">Prisma Blog</h1>
+              <h1 style="color:#ffffff; margin:0;">FoodHub</h1>
             </td>
           </tr>
 
@@ -117,7 +129,7 @@ export const auth = betterAuth({
               </p>
 
               <p style="word-break:break-all; color:#0d6efd; font-size:14px;">
-                ${url}
+                ${varificationUrl}
               </p>
 
               <p style="color:#999; font-size:14px; margin-top:30px;">
@@ -130,7 +142,7 @@ export const auth = betterAuth({
           <tr>
             <td style="padding:20px; text-align:center; background:#f4f6f8; border-radius:0 0 8px 8px;">
               <p style="margin:0; color:#999; font-size:12px;">
-                © 2025 Prisma Blog. All rights reserved.
+                © 2025 FoodHub. All rights reserved.
               </p>
             </td>
           </tr>
