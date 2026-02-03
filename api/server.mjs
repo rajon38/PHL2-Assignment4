@@ -288,15 +288,25 @@ var auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: isProduction ? "none" : "lax",
       secure: isProduction,
-      // secure in production
-      httpOnly: true
+      httpOnly: true,
+      partitioned: isProduction
     },
     trustProxy: true,
     cookies: {
       state: {
         attributes: {
           sameSite: "none",
-          secure: true
+          secure: true,
+          partitioned: true
+        }
+      },
+      // Also update session token cookie explicitly
+      sessionToken: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+          partitioned: true
         }
       }
     },
