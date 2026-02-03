@@ -3,6 +3,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import cors from "cors";
 
+
 import errorHandler from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 import router from "./routes";
@@ -15,7 +16,6 @@ const corsOptions = {
     "http://localhost:3000",
     "http://localhost:3001",
     "https://client-hazel-theta.vercel.app",
-    "*",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: [
