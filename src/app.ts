@@ -10,8 +10,7 @@ import router from "./routes";
 
 
 const app = express();
-// CRITICAL: Trust proxy for Vercel
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
 app.use(express.json());
 
@@ -26,6 +25,9 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
     credentials: true,
   }),
 );

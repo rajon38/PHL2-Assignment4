@@ -288,25 +288,14 @@ var auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: isProduction ? "none" : "lax",
       secure: isProduction,
-      httpOnly: true,
-      partitioned: isProduction
+      httpOnly: true
     },
     trustProxy: true,
     cookies: {
       state: {
         attributes: {
           sameSite: "none",
-          secure: true,
-          partitioned: true
-        }
-      },
-      // Also update session token cookie explicitly
-      sessionToken: {
-        attributes: {
-          sameSite: "none",
-          secure: true,
-          httpOnly: true,
-          partitioned: true
+          secure: true
         }
       }
     },
@@ -1751,7 +1740,7 @@ var routes_default = router7;
 
 // src/app.ts
 var app = express8();
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 app.use(express8.json());
 app.use(
   cors({
@@ -1763,6 +1752,9 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
     credentials: true
   })
 );

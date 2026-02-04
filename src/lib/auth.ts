@@ -26,33 +26,22 @@ export const auth = betterAuth({
     // Trust the host/proxy (required for Vercel)
     trustedOrigins: [process.env.APP_URL!],
     advanced: {
-  defaultCookieAttributes: {
-    sameSite: isProduction ? "none" : "lax",
-    secure: isProduction,
-    httpOnly: true,
-    partitioned: isProduction,
-  },
-  trustProxy: true,
-  cookies: {
-    state: {
-      attributes: {
-        sameSite: "none",
-        secure: true,
-        partitioned: true,
-      },
-    },
-    // Also update session token cookie explicitly
-    sessionToken: {
-      attributes: {
-        sameSite: "none",
-        secure: true,
+      defaultCookieAttributes: {
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction,
         httpOnly: true,
-        partitioned: true,
       },
+      trustProxy: true,
+      cookies: {
+        state: {
+          attributes: {
+            sameSite: "none",
+            secure: true,
+          },
+        },
+      },
+      secret: process.env.BETTER_AUTH_SECRET
     },
-  },
-  secret: process.env.BETTER_AUTH_SECRET
-},
     user: {
         additionalFields:{
             role: {
